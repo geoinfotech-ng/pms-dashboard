@@ -1,0 +1,9 @@
+{
+  "type":"FeatureCollection",
+  "features":[
+    {"type":"Feature","properties":{"name":"Dangote Refinery","location":"Ibeju-Lekki, Lagos","capacity_bpd":650000,"status":"Operational","owner":"Dangote Industries","description":"Africa's largest refinery. 650,000 bpd capacity producing petrol, diesel, jet fuel. Expected to reduce import dependence.","year":2023},"geometry":{"type":"Point","coordinates":[3.8355,6.4006]}},
+    {"type":"Feature","properties":{"name":"Port Harcourt Refinery","location":"Alesa-Eleme, Rivers","capacity_bpd":210000,"status":"Under Rehabilitation","owner":"NNPC Ltd","description":"Two plants (60k + 150k bpd). Undergoing $1.5B rehabilitation. Nigeria's largest government-owned refinery.","year":1965},"geometry":{"type":"Point","coordinates":[7.082,4.779]}},
+    {"type":"Feature","properties":{"name":"Warri Refinery","location":"Ekpan, Delta","capacity_bpd":125000,"status":"Under Rehabilitation","owner":"NNPC Ltd","description":"125,000 bpd capacity. Built 1978. Produces petrol, kerosene, diesel. Rehabilitation ongoing.","year":1978},"geometry":{"type":"Point","coordinates":[5.731,5.546]}},
+    {"type":"Feature","properties":{"name":"Kaduna Refinery","location":"Kaduna, Kaduna","capacity_bpd":110000,"status":"Under Rehabilitation","owner":"NNPC Ltd","description":"Nigeria's only inland refinery. 110,000 bpd. Serves northern Nigeria via pipeline from Niger Delta.","year":1980},"geometry":{"type":"Point","coordinates":[7.4089,10.5764]}}
+  ]
+}
