@@ -1,0 +1,34 @@
+DEPLOYMENT GUIDE — Nigeria PMS Price Dashboard v2
+==================================================
+
+CHANGES IN v2:
+- Redesigned UI with editorial/data-journalism aesthetic
+- Dark mode toggle (saves preference to localStorage)
+- Pie chart now shows PMS price distribution by price band
+- Choropleth map with proper legend (min/avg/max labels)
+- Key events updated with US-Iran war (Feb 2026) and oil price surge
+- Refineries layer removed
+- Average line positioning fixed on bar chart
+- PDF report styled to match Geoinfotech professional branding
+
+STRUCTURE:
+  index.html          — Main HTML
+  style.css           — Styles with CSS variables (light + dark theme)
+  js/config.js        — Configuration, events, settings
+  js/fuelData.js      — Data fetching from Google Sheet
+  js/map.js           — Leaflet choropleth map
+  js/charts.js        — Chart.js visualizations
+  js/ui.js            — UI logic, dark mode, PDF generation
+  js/logo.js          — Logo base64
+  assets/logo.png     — Logo image
+
+DEPENDENCIES (loaded via CDN):
+  - Leaflet 1.9.4
+  - Chart.js 4.4.7
+  - jsPDF 2.5.2
+  - Google Fonts: Playfair Display, IBM Plex Sans, DM Mono
+
+TO DEPLOY:
+  1. Upload all files maintaining folder structure
+  2. Ensure Google Sheet URL in config.js is accessible
+  3. Serve via any static file server or hosting platform

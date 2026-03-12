@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nigeria PMS Price Dashboard — Geoinfotech</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loader" class="loader"><div class="ld-spinner"></div><span>Loading NBS data…</span></div>
+<div id="notifs" class="notifs"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="hd-left">
+    <div class="hd-mark">G</div>
+    <div>
+      <div class="hd-title">Nigeria PMS Price Dashboard</div>
+      <div class="hd-sub">National Bureau of Statistics — PMS Price Watch</div>
+    </div>
+  </div>
+  <div class="hd-right">
+    <button id="darkToggle" class="dark-toggle" title="Toggle dark mode">
+      <svg class="ico-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg class="ico-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <span class="hd-period" id="statDate"></span>
+  </div>
+</header>
+
+<!-- Stats bar -->
+<div class="stat-bar">
+  <div class="sb-item"><div class="sb-label">National Average</div><div class="sb-val" id="statAvg">—</div></div>
+  <div class="sb-item"><div class="sb-label">Lowest Price</div><div class="sb-val lo" id="statMin">—</div></div>
+  <div class="sb-item"><div class="sb-label">Highest Price</div><div class="sb-val hi" id="statMax">—</div></div>
+  <div class="sb-item"><div class="sb-label">Price Spread</div><div class="sb-val" id="statSpread">—</div></div>
+  <div class="sb-item"><div class="sb-label">Coverage</div><div class="sb-val" id="statCount">—</div></div>
+</div>
+
+<!-- Insight -->
+<div class="insight" id="insight"></div>
+
+<!-- Main two-column -->
+<div class="main">
+  <!-- Map column -->
+  <div class="col-map">
+    <div class="map-box">
+      <div id="map" class="map-el"></div>
+      <div id="hover" class="hover"><span id="hoverName"></span><span id="hoverPrice" class="hv-p"></span><span id="hoverRank" class="hv-r"></span></div>
+    </div>
+    <!-- Rank cards -->
+    <div class="rank-row">
+      <div class="rank-card">
+        <div class="rc-h expensive">Most Expensive States</div>
+        <div id="topExpensive"></div>
+      </div>
+      <div class="rank-card">
+        <div class="rc-h affordable">Most Affordable States</div>
+        <div id="topAffordable"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts column -->
+  <div class="col-charts">
+    <div class="card">
+      <h3>Average Price by Geopolitical Zone</h3>
+      <div class="ch h200"><canvas id="zoneChart"></canvas></div>
+    </div>
+
+    <div class="card-row">
+      <div class="card half">
+        <h3>PMS Price Distribution</h3>
+        <p class="card-sub">States grouped by price band</p>
+        <div class="ch h200"><canvas id="pieChart"></canvas></div>
+      </div>
+      <div class="card half">
+        <h3>Compare Two States</h3>
+        <div class="cmp-row">
+          <select id="selA"></select>
+          <span class="cmp-vs">vs</span>
+          <select id="selB"></select>
+        </div>
+        <div class="cmp-btns">
+          <button id="compareBtn" class="btn">Compare</button>
+          <button id="pdfBtn" class="btn btn-outline" style="display:none">Download PDF</button>
+        </div>
+        <div class="ch h140"><canvas id="cmpChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>All States Ranked by PMS Price</h3>
+      <p class="card-sub">Lowest to highest. <span class="avg-label">Dashed line = national average.</span></p>
+      <div class="ch h-full"><canvas id="stateChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- State detail panel -->
+<aside id="detail" class="detail">
+  <button id="detailClose" class="dt-close">&times;</button>
+  <div class="dt-name" id="detailName">—</div>
+  <div class="dt-price" id="detailPrice">—</div>
+  <div class="dt-unit">per litre</div>
+  <div class="dt-rows">
+    <div><span>Rank</span><span id="detailRank">—</span></div>
+    <div><span>Zone</span><span id="detailZone">—</span></div>
+    <div><span>Period</span><span id="detailDate">—</span></div>
+  </div>
+  <div class="dt-vs" id="detailVsAvg"></div>
+</aside>
+
+<!-- Timeline -->
+<section class="tl-section">
+  <h2>Key Events Affecting Nigerian Fuel Prices</h2>
+  <p class="tl-sub">Click any event to see details and sources.</p>
+  <div id="timeline" class="tl-grid"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="ft-mark">G</div>
+  <div class="ft-name">Geoinfotech</div>
+  <div class="ft-line">Oluwalogbon House, Testing Ground Bus Stop, Obafemi Awolowo Way, Alausa, Ikeja, Lagos.</div>
+  <div class="ft-line">Email: mail@geoinfotech.ng | contact@geoinfotech.ng</div>
+  <div class="ft-line">Phone: +234 816 322 2177 | +234 901 872 4833</div>
+  <div class="ft-credits">Data: NBS PMS Price Watch · Boundaries: geoBoundaries (CC-BY-4.0) · Map: CARTO/OSM · Built with Leaflet &amp; Chart.js</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/config.js"></script>
+<script src="js/fuelData.js"></script>
+<script src="js/map.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
