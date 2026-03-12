@@ -1,0 +1,57 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dangote Refinery",
+        "location": "Ibeju-Lekki, Lagos State",
+        "capacity_bpd": 650000,
+        "status": "Operational",
+        "owner": "Dangote Industries Ltd",
+        "description": "Africa's largest single-train refinery. 650,000 bpd capacity. Produces petrol, diesel, jet fuel, and polypropylene. Expected to significantly reduce Nigeria's dependence on imported refined products.",
+        "year": 2023
+      },
+      "geometry": { "type": "Point", "coordinates": [3.8355, 6.4006] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Port Harcourt Refinery",
+        "location": "Alesa-Eleme, Rivers State",
+        "capacity_bpd": 210000,
+        "status": "Under Rehabilitation",
+        "owner": "NNPC Ltd",
+        "description": "Two plants (60,000 + 150,000 bpd). Currently undergoing $1.5B rehabilitation by Tecnimont SpA. Nigeria's largest government-owned refinery.",
+        "year": 1965
+      },
+      "geometry": { "type": "Point", "coordinates": [7.082, 4.779] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Warri Refinery",
+        "location": "Ekpan, Delta State",
+        "capacity_bpd": 125000,
+        "status": "Under Rehabilitation",
+        "owner": "NNPC Ltd",
+        "description": "Built 1978, 125,000 bpd capacity. Produces petrol, kerosene, diesel. Has operated below capacity for years. Rehabilitation ongoing.",
+        "year": 1978
+      },
+      "geometry": { "type": "Point", "coordinates": [5.731, 5.546] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kaduna Refinery",
+        "location": "Kaduna, Kaduna State",
+        "capacity_bpd": 110000,
+        "status": "Under Rehabilitation",
+        "owner": "NNPC Ltd",
+        "description": "Nigeria's only inland refinery, 110,000 bpd. Strategically serves northern Nigeria. Receives crude via pipeline from Niger Delta. Being rehabilitated.",
+        "year": 1980
+      },
+      "geometry": { "type": "Point", "coordinates": [7.4089, 10.5764] }
+    }
+  ]
+}

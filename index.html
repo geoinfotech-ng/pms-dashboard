@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nigeria Fuel Price & Global Oil Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loader-ring"></div>
+  <p class="loader-text">Loading dashboard data...</p>
+</div>
+
+<!-- Notifications -->
+<div id="notifs" class="notifs"></div>
+
+<!-- Topbar -->
+<header class="topbar">
+  <div class="topbar-left">
+    <h1 class="topbar-title">Nigeria Fuel & Oil Dashboard</h1>
+    <span class="topbar-sub">NBS Price Watch · Alpha Vantage · geoBoundaries</span>
+  </div>
+  <div class="topbar-center">
+    <button id="themeBtn" class="btn-sm">Light Mode</button>
+    <label class="toggle" for="refineryToggle">
+      <input type="checkbox" id="refineryToggle" checked>
+      <span class="toggle-track"></span>
+      Refineries
+    </label>
+  </div>
+  <div class="topbar-right">
+    <div class="brent-block">
+      <span class="brent-label">Brent Crude</span>
+      <span id="brentBadge" class="badge loading">LOADING</span>
+      <span id="brentPrice" class="brent-price">···</span>
+      <span id="brentDate" class="brent-date"></span>
+    </div>
+  </div>
+</header>
+
+<!-- Main layout -->
+<main class="grid-main">
+
+  <!-- LEFT: Map area -->
+  <section class="col-map">
+    <div class="section-head">
+      <h2>Petrol Price by State</h2>
+      <span class="section-source">Source: NBS PMS Price Watch via Google Sheets</span>
+    </div>
+    <div class="map-wrap">
+      <div id="map" class="map-el"></div>
+      <!-- Hover info -->
+      <div id="stateHover" class="hover-card">
+        <span id="hoverName" class="hc-name"></span>
+        <span id="hoverPrice" class="hc-price"></span>
+        <span id="hoverRank" class="hc-rank"></span>
+      </div>
+    </div>
+
+    <!-- Zone strip -->
+    <div id="zoneStrip" class="zone-strip"></div>
+
+    <!-- Stats row -->
+    <div class="stats-row">
+      <div class="stat"><span class="stat-lbl">National Avg</span><span id="statAvg" class="stat-val">—</span></div>
+      <div class="stat"><span class="stat-lbl">Lowest</span><span id="statMin" class="stat-val">—</span></div>
+      <div class="stat"><span class="stat-lbl">Highest</span><span id="statMax" class="stat-val">—</span></div>
+      <div class="stat"><span class="stat-lbl">Spread</span><span id="statSpread" class="stat-val">—</span></div>
+    </div>
+
+    <!-- Top/Bottom cards -->
+    <div id="insightText" class="insight-card"></div>
+  </section>
+
+  <!-- RIGHT: Charts -->
+  <section class="col-charts">
+
+    <!-- API key prompt (hidden by default) -->
+    <div id="apiSection" class="api-section" style="display:none">
+      <h3>Connect to Live Oil Prices</h3>
+      <p>Enter your free <a href="https://www.alphavantage.co/support/#api-key" target="_blank">Alpha Vantage API key</a> for live Brent crude data.</p>
+      <div class="api-row">
+        <input type="text" id="apiInput" placeholder="Paste API key...">
+        <button id="apiBtn" class="btn-accent">Connect</button>
+      </div>
+    </div>
+
+    <!-- Brent trend -->
+    <div class="chart-card">
+      <div class="chart-head"><h3>Brent Crude Oil Price Trend</h3><span>Alpha Vantage API (EIA)</span></div>
+      <div class="chart-box h220"><canvas id="trendChart"></canvas></div>
+    </div>
+
+    <!-- Zone comparison -->
+    <div class="chart-card">
+      <div class="chart-head"><h3>Average Price by Geopolitical Zone</h3><span>NBS Data</span></div>
+      <div class="chart-box h200"><canvas id="zoneChart"></canvas></div>
+    </div>
+
+    <!-- Row: histogram + donut -->
+    <div class="chart-row">
+      <div class="chart-card flex1">
+        <div class="chart-head"><h3>Price Distribution</h3><span>States per price band</span></div>
+        <div class="chart-box h200"><canvas id="histChart"></canvas></div>
+      </div>
+      <div class="chart-card flex1">
+        <div class="chart-head"><h3>Pump Price Breakdown</h3><span>Approximate cost structure</span></div>
+        <div class="chart-box h200"><canvas id="breakdownChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Distance vs Price -->
+    <div class="chart-card">
+      <div class="chart-head"><h3>Distance to Nearest Refinery vs Price</h3><span>Does distance from refineries drive cost?</span></div>
+      <div class="chart-box h250"><canvas id="distanceChart"></canvas></div>
+    </div>
+
+    <!-- State bar chart -->
+    <div class="chart-card">
+      <div class="chart-head"><h3>All States Ranked by Petrol Price</h3><span>NBS PMS Price Watch</span></div>
+      <div class="chart-box h-state"><canvas id="stateChart"></canvas></div>
+    </div>
+
+    <!-- Comparison tool -->
+    <div class="chart-card">
+      <div class="chart-head"><h3>Compare States</h3><span>Select 2–3 states to compare</span></div>
+      <div class="compare-row">
+        <select id="compareA"></select>
+        <select id="compareB"></select>
+        <select id="compareC"></select>
+        <button id="compareBtn" class="btn-accent">Compare</button>
+      </div>
+      <div class="chart-box h200"><canvas id="compareChart"></canvas></div>
+    </div>
+  </section>
+</main>
+
+<!-- State detail sidebar -->
+<aside id="sidebar" class="sidebar">
+  <button id="sidebarClose" class="sidebar-close">&times;</button>
+  <div class="sb-title" id="sidebarName">—</div>
+  <div class="sb-price" id="sidebarPrice">—</div>
+  <div class="sb-label">per litre</div>
+  <div class="sb-meta">
+    <div><span class="sb-k">Rank</span><span class="sb-v" id="sidebarRank">—</span></div>
+    <div><span class="sb-k">Zone</span><span class="sb-v" id="sidebarZone">—</span></div>
+    <div><span class="sb-k">vs Average</span><span class="sb-v" id="sidebarVsAvg">—</span></div>
+  </div>
+</aside>
+
+<!-- Timeline -->
+<section class="timeline-section">
+  <h2>Key Events Affecting Nigerian Fuel Prices</h2>
+  <div id="timeline" class="timeline"></div>
+</section>
+
+<!-- Info panel -->
+<footer class="info-footer">
+  <div class="info-cols">
+    <div>
+      <h3>How Global Oil Prices Affect Nigerian Petrol Prices</h3>
+      <p>Nigeria is Africa's largest oil producer yet has historically imported most refined petroleum. When Brent crude rises, import costs increase proportionally. The pump price is shaped by the crude oil benchmark, the NGN/USD exchange rate, limited domestic refining capacity, transportation costs (northern states pay more), and government policy — particularly the 2023 subsidy removal which exposed prices to market forces.</p>
+    </div>
+    <div>
+      <h3>About This Dashboard</h3>
+      <p>Fuel prices are sourced from the National Bureau of Statistics PMS Price Watch reports, updated monthly via a published Google Sheet. Brent crude prices come from the Alpha Vantage API (EIA data). State boundaries are from geoBoundaries (CC-BY-4.0). Refinery locations from OpenStreetMap. Map tiles by CARTO.</p>
+      <p style="margin-top:8px;font-size:12px;opacity:0.5">Built with Leaflet, Chart.js, and vanilla JavaScript. Deployed on GitHub Pages.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/fuelData.js"></script>
+<script src="js/oilData.js"></script>
+<script src="js/map.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
