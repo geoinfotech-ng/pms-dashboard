@@ -7,7 +7,7 @@ const Config = {
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZkXp7HUOKoKUAkjl5tV14AYmf6-a4KimPacSbgonglGhUctuG_95W9FudhqujIoAfgLZf8CN1MmB2/pub?gid=1916161667&single=true&output=csv',
 
   NIGERIA_GEOJSON_URL:
-    'https://raw.githubusercontent.com/geoBoundaries/geoBoundariesOpen/main/releaseData/gbOpen/NGA/ADM1/geoBoundaries-NGA-ADM1_simplified.geojson',
+     'https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/NGA/ADM1/geoBoundaries-NGA-ADM1_simplified.geojson',
 
   REFINERIES_GEOJSON: 'data/refineries.geojson',
 
