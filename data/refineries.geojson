@@ -1,0 +1,6 @@
+{"type":"FeatureCollection","features":[
+{"type":"Feature","properties":{"name":"Dangote Refinery","location":"Ibeju-Lekki, Lagos","capacity_bpd":650000,"status":"Operational","description":"Africa's largest refinery, 650,000 bpd. Produces petrol, diesel, jet fuel. Commissioned May 2023, PMS production began September 2024."},"geometry":{"type":"Point","coordinates":[3.8355,6.4006]}},
+{"type":"Feature","properties":{"name":"Port Harcourt Refinery","location":"Alesa-Eleme, Rivers","capacity_bpd":210000,"status":"Under Rehabilitation","description":"Two plants (60k + 150k bpd). Under $1.5B rehabilitation by Tecnimont SpA. Nigeria's largest government-owned refinery."},"geometry":{"type":"Point","coordinates":[7.082,4.779]}},
+{"type":"Feature","properties":{"name":"Warri Refinery","location":"Ekpan, Delta","capacity_bpd":125000,"status":"Under Rehabilitation","description":"125,000 bpd capacity, built 1978. Produces petrol, kerosene, diesel. Currently under rehabilitation."},"geometry":{"type":"Point","coordinates":[5.731,5.546]}},
+{"type":"Feature","properties":{"name":"Kaduna Refinery","location":"Kaduna","capacity_bpd":110000,"status":"Under Rehabilitation","description":"Nigeria's only inland refinery, 110,000 bpd. Serves northern Nigeria. Receives crude via pipeline from Niger Delta."},"geometry":{"type":"Point","coordinates":[7.4089,10.5764]}}
+]}

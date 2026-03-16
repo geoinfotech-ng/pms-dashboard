@@ -1,0 +1,44 @@
+================================================================
+DEPLOYMENT GUIDE — Nigeria PMS Price Dashboard
+================================================================
+
+1. UPLOAD TO GITHUB
+
+   Create a new public repo at https://github.com/new
+   Upload ALL files. index.html must be at the root.
+
+   Structure:
+   ├── index.html
+   ├── style.css
+   ├── assets/logo.png
+   ├── js/ (6 files)
+   └── data/refineries.geojson
+
+2. ENABLE GITHUB PAGES
+
+   Settings → Pages → Source: main branch, / (root) → Save
+   Live at: https://USERNAME.github.io/REPONAME/
+
+3. MONTHLY UPDATE
+
+   Download NBS PMS Price Watch from:
+   https://microdata.nigerianstat.gov.ng/index.php/catalog/157
+   Update your Google Sheet fuel_prices tab.
+   Dashboard updates automatically.
+
+4. TROUBLESHOOTING
+
+   No colored states → Open F12 Console, check unmatched names
+   PDF not downloading → Refresh page, try comparison again
+   Data looks stale → Hard refresh Ctrl+Shift+R
+   404 on GitHub Pages → Check index.html is at repo root
+
+================================================================
+CONTACT
+
+Geoinfotech
+Oluwalogbon House, Testing Ground Bus Stop,
+Obafemi Awolowo Way, Alausa, Ikeja, Lagos.
+Email: mail@geoinfotech.ng | contact@geoinfotech.ng
+Phone: +234 816 322 2177 | +234 901 872 4833
+================================================================

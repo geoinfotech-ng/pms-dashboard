@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nigeria PMS Price Dashboard — Geoinfotech</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loader" class="loader"><div class="ld-spinner"></div><span>Loading data...</span></div>
+<div id="notifs" class="notifs"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="hd-left">
+    <img src="assets/logo.png" alt="" class="hd-logo">
+    <div>
+      <div class="hd-title">Nigeria PMS Price Dashboard</div>
+      <div class="hd-sub">National Bureau of Statistics — PMS Price Watch</div>
+    </div>
+  </div>
+  <div class="hd-right">
+    <span class="hd-period" id="statDate"></span>
+  </div>
+</header>
+
+<!-- Stats bar -->
+<div class="stat-bar">
+  <div class="sb-item"><div class="sb-label">National Average</div><div class="sb-val" id="statAvg">—</div></div>
+  <div class="sb-item"><div class="sb-label">Lowest Price</div><div class="sb-val lo" id="statMin">—</div></div>
+  <div class="sb-item"><div class="sb-label">Highest Price</div><div class="sb-val hi" id="statMax">—</div></div>
+  <div class="sb-item"><div class="sb-label">Price Spread</div><div class="sb-val" id="statSpread">—</div></div>
+  <div class="sb-item"><div class="sb-label">Coverage</div><div class="sb-val" id="statCount">—</div></div>
+</div>
+
+<!-- Insight -->
+<div class="insight" id="insight"></div>
+
+<!-- Main two-column -->
+<div class="main">
+
+  <!-- Map column -->
+  <div class="col-map">
+    <div class="map-box">
+      <div id="map" class="map-el"></div>
+      <div id="hover" class="hover"><span id="hoverName"></span><span id="hoverPrice" class="hv-p"></span><span id="hoverRank" class="hv-r"></span></div>
+    </div>
+
+    <!-- Rank cards -->
+    <div class="rank-row">
+      <div class="rank-card">
+        <div class="rc-h expensive">Most Expensive States</div>
+        <div id="topExpensive"></div>
+      </div>
+      <div class="rank-card">
+        <div class="rc-h affordable">Most Affordable States</div>
+        <div id="topAffordable"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts column -->
+  <div class="col-charts">
+    <div class="card">
+      <h3>Average Price by Geopolitical Zone</h3>
+      <div class="ch h200"><canvas id="zoneChart"></canvas></div>
+    </div>
+
+    <div class="card-row">
+      <div class="card half">
+        <h3>Explore a State</h3>
+        <p class="card-sub">Generate a quick profile for one state using the current spreadsheet values.</p>
+        <div class="cmp-row">
+          <select id="selSingle"></select>
+        </div>
+        <div class="cmp-btns">
+          <button id="stateInfoBtn" class="btn">Generate Info</button>
+          <button id="singlePdfBtn" class="btn btn-outline">Download PDF</button>
+        </div>
+        <div id="stateInfo" class="state-info"></div>
+        <div class="ch h140"><canvas id="stateInfoChart"></canvas></div>
+      </div>
+      <div class="card half">
+        <h3>Compare Two States</h3>
+        <p class="card-sub">Compare both states against the same national average benchmark.</p>
+        <div class="cmp-row">
+          <select id="selA"></select>
+          <span class="cmp-vs">vs</span>
+          <select id="selB"></select>
+        </div>
+        <div class="cmp-btns">
+          <button id="compareBtn" class="btn">Compare</button>
+          <button id="pdfBtn" class="btn btn-outline" style="display:none">Download PDF</button>
+        </div>
+        <div id="compareInfo" class="state-info compare-info"></div>
+        <div class="ch h140"><canvas id="cmpChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>All States Ranked by PMS Price</h3>
+      <p class="card-sub">Lowest to highest. Dashed line = national average.</p>
+      <div class="ch h-full"><canvas id="stateChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- State detail panel -->
+<aside id="detail" class="detail">
+  <button id="detailClose" class="dt-close">&times;</button>
+  <div class="dt-name" id="detailName">—</div>
+  <div class="dt-price" id="detailPrice">—</div>
+  <div class="dt-unit">per litre</div>
+  <div class="dt-rows">
+    <div><span>Rank</span><span id="detailRank">—</span></div>
+    <div><span>Zone</span><span id="detailZone">—</span></div>
+    <div><span>Period</span><span id="detailDate">—</span></div>
+  </div>
+  <div class="dt-vs" id="detailVsAvg"></div>
+</aside>
+
+<!-- PMS Impact Section -->
+<section class="impact-section">
+  <div class="impact-hdr">
+    <h2>PMS Price Impact on Nigeria</h2>
+    <p>How the end of the fuel subsidy and sustained import cost pressures have reshaped Nigeria's economy, households, and key sectors. All figures fact-checked against NBS, CBN, and World Bank data.</p>
+  </div>
+
+  <!-- Price Journey Chart -->
+  <div class="impact-journey">
+    <div class="card impact-journey-card">
+      <div class="ij-head">
+        <div>
+          <h3>PMS Price Journey — 2022 to 2026</h3>
+          <p class="card-sub">National average retail pump price (₦/L) from the subsidised era through to the January 2026 NBS survey. Sources: NBS PMS Price Watch monthly series.</p>
+        </div>
+        <div class="ij-legend-row">
+          <span><span class="ij-dot" style="background:#27ae60"></span>Subsidised era</span>
+          <span><span class="ij-dot" style="background:#e8583e"></span>Post-reform</span>
+          <span><span class="ij-dot" style="background:#c0392b"></span>Peak (Dec 2024)</span>
+          <span><span class="ij-dot" style="background:#2980b9"></span>Jan 2026</span>
+        </div>
+      </div>
+      <div class="ch" style="height:260px"><canvas id="priceJourneyChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Stat cards (populated by renderImpact()) -->
+  <div id="impactStats" class="impact-stats"></div>
+
+  <!-- Sector impact cards (static) -->
+  <div class="impact-sectors">
+    <div class="imp-sector-hdr">Cascading Effects Across Key Sectors</div>
+    <div class="imp-sector-grid">
+
+      <div class="imp-sector">
+        <div class="imp-sector-name">Road Transport</div>
+        <div class="imp-sector-body">Commercial transport operators pass PMS costs directly to passengers and shippers. Intra-city, intercity, and last-mile freight fares have risen sharply since the May 2023 subsidy removal, disproportionately affecting low-income commuters and rural communities with no alternatives.</div>
+        <div class="imp-sector-src">Source: NURTW; NBS Consumer Price Index (Transport)</div>
+      </div>
+
+      <div class="imp-sector">
+        <div class="imp-sector-name">Food &amp; Agriculture</div>
+        <div class="imp-sector-body">PMS is embedded throughout Nigeria's food supply chain — powering irrigation pumps, farm machinery, market trucks and cold-chain logistics. Nigeria's food inflation peaked at <b>40.87%</b> in March 2024, the highest in nearly three decades, with fuel cost pass-through a primary driver.</div>
+        <div class="imp-sector-src">Source: NBS Food Price Index, March 2024</div>
+      </div>
+
+      <div class="imp-sector">
+        <div class="imp-sector-name">Power &amp; Energy</div>
+        <div class="imp-sector-body">An estimated 25 million generators are in daily use across Nigeria, serving households and businesses that cannot rely on the national grid. The 5.6× increase in generator fuel cost since 2022 has effectively reduced real access to electricity for millions of Nigerians.</div>
+        <div class="imp-sector-src">Source: NBS; World Bank Nigeria Electrification Data 2024</div>
+      </div>
+
+      <div class="imp-sector">
+        <div class="imp-sector-name">Small &amp; Medium Businesses</div>
+        <div class="imp-sector-body">SMEs account for approximately 50% of Nigeria's GDP and 80% of employment. Energy — primarily diesel and PMS — constitutes an estimated 20–40% of SME operating costs. Rising fuel prices have forced many micro-enterprises to cut output, reduce hours, or shut down entirely.</div>
+        <div class="imp-sector-src">Source: CBN SME Survey; Manufacturers Association of Nigeria; World Bank</div>
+      </div>
+
+      <div class="imp-sector">
+        <div class="imp-sector-name">Households &amp; Welfare</div>
+        <div class="imp-sector-body">Beyond transport and generators, PMS powers motorcycles (primary rural mobility), water pumps, and petrol-fuelled appliances. Urban and peri-urban households face compounded cost pressure across food, energy, and transport — all of which are indexed to the pump price of PMS.</div>
+        <div class="imp-sector-src">Source: CBN Consumer Expectation Survey; NBS Household Survey data</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section class="tl-section">
+  <h2>Key Events Affecting Nigerian Fuel Prices</h2>
+  <p class="tl-sub">Click any event to see details and sources.</p>
+  <div id="timeline" class="tl-grid"></div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <img src="assets/logo.png" alt="" class="ft-logo">
+  <div class="ft-name">Geoinfotech</div>
+  <div class="ft-line">Oluwalogbon House, Testing Ground Bus Stop, Obafemi Awolowo Way, Alausa, Ikeja, Lagos.</div>
+  <div class="ft-line">Email: mail@geoinfotech.ng | contact@geoinfotech.ng</div>
+  <div class="ft-line">Phone: +234 816 322 2177 | +234 901 872 4833</div>
+  <div class="ft-credits">Data: NBS PMS Price Watch · Boundaries: geoBoundaries (CC-BY-4.0) · Map: CARTO/OSM · Built with Leaflet &amp; Chart.js</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/config.js"></script>
+<script src="js/fuelData.js"></script>
+<script src="js/map.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
